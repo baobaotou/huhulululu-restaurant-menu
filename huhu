@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐厅电子菜单</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f8f5f2;
+            padding: 20px;
+        }
+        .menu-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .category-tab {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .category-tab.active {
+            background: #d92121;
+            color: white;
+        }
+        .dish-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .dish-item {
+            background: #fafafa;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .dish-item:hover {
+            transform: translateY(-5px);
+        }
+        .dish-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover; /* 图片自适应，不拉伸 */
+        }
+        .dish-info {
+            padding: 15px;
+        }
+        .dish-name {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .dish-price {
+            font-size: 20px;
+            color: #d92121;
+            font-weight: bold;
+        }
+        .dish-desc {
+            font-size: 14px;
+            color: #999;
+            margin: 5px 0;
+        }
+
+        /* 响应式：手机端适配 */
+        @media (max-width: 600px) {
+            .menu-container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .dish-list {
+                grid-template-columns: 1fr; /* 手机端单列显示 */
+            }
+            .dish-img {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <h1>XX餐厅电子菜单</h1>
+        <div class="category-tabs" id="categoryTabs"></div>
+        <div class="dish-list" id="dishList"></div>
+    </div>
+
+    <script>
+        // --------------------------
+        // 👇 这里是菜单数据，直接修改即可
+        // --------------------------
+        const MENU_DATA = [
+            // 第一类：热菜（可修改分类名、菜品信息）
+            {
+                category: "热菜",
+                dishes: [
+                    {
+                        name: "香辣小龙虾", // 菜品名
+                        price: 128, // 价格
+                        desc: "秘制酱料，麻辣鲜香", // 描述（可选）
+                        img: "https://picsum.photos/id/292/400/300" // 图片地址（支持网络图/本地图）
+                    },
+                    {
+                        name: "蒜蓉粉丝蒸扇贝",
+                        price: 68,
+                        desc: "新鲜扇贝+蒜蓉，一口爆汁",
+                        img: "https://picsum.photos/id/488/400/300"
+                    },
+                    {
+                        name: "东坡肉",
+                        price: 58,
+                        desc: "肥而不腻，入口即化",
+                        img: "https://picsum.photos/id/312/400/300"
+                    }
+                ]
+            },
+            // 第二类：凉菜
+            {
+                category: "凉菜",
+                dishes: [
+                    {
+                        name: "拍黄瓜",
+                        price: 12,
+                        desc: "清爽解腻，开胃必备",
+                        img: "https://picsum.photos/id/139/400/300"
+                    },
+                    {
+                        name: "夫妻肺片",
+                        price: 38,
+                        desc: "麻辣鲜香，经典川菜",
+                        img: "https://picsum.photos/id/225/400/300"
+                    }
+                ]
+            },
+            // 第三类：饮品
+            {
+                category: "饮品",
+                dishes: [
+                    {
+                        name: "冰镇酸梅汤",
+                        price: 10,
+                        desc: "手工熬制，消暑解渴",
+                        img: "https://picsum.photos/id/227/400/300"
+                    },
+                    {
+                        name: "鲜榨西瓜汁",
+                        price: 15,
+                        desc: "无添加，纯鲜榨",
+                        img: "https://picsum.photos/id/239/400/300"
+                    }
+                ]
+            }
+        ];
+
+        // --------------------------
+        // 以下代码不用动，自动渲染菜单
+        // --------------------------
+        const categoryTabs = document.getElementById("categoryTabs");
+        const dishList = document.getElementById("dishList");
+
+        // 1. 渲染分类标签
+        function renderCategoryTabs() {
+            MENU_DATA.forEach((category, index) => {
+                const tab = document.createElement("button");
+                tab.className = `category-tab ${index === 0 ? "active" : ""}`;
+                tab.textContent = category.category;
+                tab.onclick = () => {
+                    // 切换活跃标签
+                    document.querySelectorAll(".category-tab").forEach(t => t.classList.remove("active"));
+                    tab.classList.add("active");
+                    // 渲染对应分类的菜品
+                    renderDishes(index);
+                };
+                categoryTabs.appendChild(tab);
+            });
+        }
+
+        // 2. 渲染菜品列表
+        function renderDishes(categoryIndex) {
+            const selectedCategory = MENU_DATA[categoryIndex];
+            dishList.innerHTML = ""; // 清空原有菜品
+
+            selectedCategory.dishes.forEach(dish => {
+                const dishItem = document.createElement("div");
+                dishItem.className = "dish-item";
+                // 拼接菜品HTML
+                dishItem.innerHTML = `
+                    <img src="${dish.img}" alt="${dish.name}" class="dish-img">
+                    <div class="dish-info">
+                        <div class="dish-name">${dish.name}</div>
+                        <div class="dish-desc">${dish.desc}</div>
+                        <div class="dish-price">¥${dish.price}</div>
+                    </div>
+                `;
+                dishList.appendChild(dishItem);
+            });
+        }
+
+        // 初始化：渲染标签和默认菜品
+        renderCategoryTabs();
+        renderDishes(0);
+    </script>
+</body>
+</html>
