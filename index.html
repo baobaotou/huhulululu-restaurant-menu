@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>户户卤餐厅电子菜单</title>
+    <title>户户卤 KUNFU KITCHEN</title>
     <style>
         * {
             margin: 0;
@@ -31,6 +31,44 @@
             margin-bottom: 25px;
             font-weight: 600;
         }
+        
+        /* 门店信息样式 */
+        .store-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            background-color: #f8f5f0;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+        .store-img {
+            width: 100%;
+            max-width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .store-details {
+            flex: 1;
+            min-width: 250px;
+        }
+        .store-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .store-address, .store-hours, .store-phone {
+            margin-bottom: 6px;
+            color: #555;
+            font-size: 15px;
+        }
+        .store-address i, .store-hours i, .store-phone i {
+            margin-right: 8px;
+            color: #e63946;
+        }
+        
         /* 分类标签样式 */
         .category-nav {
             display: flex;
@@ -57,6 +95,7 @@
             background: #e63946;
             color: #fff;
         }
+        
         /* 菜品列表样式 */
         .dish-grid {
             display: grid;
@@ -68,6 +107,7 @@
             border-radius: 12px;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
         .dish-card:hover {
             transform: translateY(-6px);
@@ -102,6 +142,96 @@
             color: #e63946;
             font-weight: 600;
         }
+        
+        /* 菜品详情页样式 */
+        .dish-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .detail-content {
+            background-color: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .detail-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .detail-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .detail-info {
+            padding: 25px 20px;
+        }
+        .detail-name {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #2d2d2d;
+        }
+        .detail-price {
+            font-size: 22px;
+            color: #e63946;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .detail-description {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .detail-ingredients {
+            background-color: #f8f5f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .detail-ingredients h4 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .detail-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .feature-tag {
+            background-color: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        
         /* 响应式适配 */
         @media (max-width: 768px) {
             .menu-wrap {
@@ -125,6 +255,9 @@
             .dish-img {
                 height: 140px;
             }
+            .detail-img {
+                height: 220px;
+            }
         }
         @media (max-width: 480px) {
             .dish-grid {
@@ -133,127 +266,203 @@
             .dish-img {
                 height: 180px;
             }
+            .store-info {
+                flex-direction: column;
+                padding: 15px;
+            }
+            .store-img {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="menu-wrap">
-        <h1>户户卤餐厅电子菜单</h1>
+        <h1>户户卤 KUNFU KITCHEN</h1>
+        
+        <!-- 门店信息展示 -->
+        <div class="store-info">
+            <img src="https://picsum.photos/id/429/600/400" alt="户户卤门店" class="store-img">
+            <div class="store-details">
+                <h2 class="store-title">门店信息</h2>
+                <div class="store-address">
+                    <i>📍</i>地址：北京市朝阳区建国路88号卤味广场1层
+                </div>
+                <div class="store-hours">
+                    <i>⏰</i>营业时间：10:00 - 22:00（全年无休）
+                </div>
+                <div class="store-phone">
+                    <i>📞</i>订餐电话：400-888-9999
+                </div>
+            </div>
+        </div>
+        
         <div class="category-nav" id="categoryNav"></div>
         <div class="dish-grid" id="dishGrid"></div>
     </div>
+    
+    <!-- 菜品详情弹窗 -->
+    <div class="dish-detail-modal" id="dishDetailModal">
+        <div class="detail-content">
+            <button class="detail-close" id="detailClose">&times;</button>
+            <img src="" alt="" class="detail-img" id="detailImg">
+            <div class="detail-info">
+                <h3 class="detail-name" id="detailName"></h3>
+                <div class="detail-price" id="detailPrice"></div>
+                <div class="detail-description" id="detailDescription"></div>
+                <div class="detail-ingredients">
+                    <h4>主要食材</h4>
+                    <p id="detailIngredients"></p>
+                </div>
+                <div class="detail-features" id="detailFeatures"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --------------------------
-        // 👇 这里是菜单数据，直接修改即可
-        // 图片用免费公开网络图，无需上传！
-        // --------------------------
+        // 卤制品菜单数据
         const MENU_DATA = [
             {
-                category: "热菜", // 分类名称
+                category: "经典卤味",
                 dishes: [
                     {
-                        name: "香辣小龙虾", // 菜品名
-                        price: 138, // 价格（无需加¥）
-                        desc: "秘制酱料腌制，麻辣鲜香，肉质Q弹", // 菜品描述
-                        img: "https://picsum.photos/id/292/600/400" // 免费网络图（稳定不失效）
+                        name: "招牌卤猪蹄",
+                        price: 58,
+                        desc: "精选前蹄，24味香料慢卤8小时，软糯脱骨",
+                        img: "https://picsum.photos/id/231/600/400",
+                        detailDesc: "我们的招牌卤猪蹄选用优质前蹄，经过浸泡、焯水、去腥等多道工序，再用由24味天然香料秘制的老卤汤慢火卤制8小时以上，直至肉质软糯脱骨，肥而不腻。卤香渗透每一丝肉质，口感丰富，回味悠长。",
+                        ingredients: "猪蹄、八角、桂皮、香叶、丁香、草果、花椒、冰糖、酱油等",
+                        features: ["招牌必点", "胶原蛋白丰富", "可真空包装", "微辣"]
                     },
                     {
-                        name: "蒜蓉粉丝蒸扇贝",
-                        price: 78,
-                        desc: "新鲜扇贝搭配蒜蓉，粉丝吸满汤汁",
-                        img: "https://picsum.photos/id/488/600/400"
+                        name: "卤牛肉",
+                        price: 88,
+                        desc: "精选牛腱子，老汤慢卤，纹理清晰，酱香浓郁",
+                        img: "https://picsum.photos/id/488/600/400",
+                        detailDesc: "精选优质牛腱子肉，采用传统工艺，用传承老汤慢火卤制。成品色泽酱红，切片后纹理清晰，肉质紧实有嚼劲，卤香浓郁，咸淡适中。无论是直接食用还是凉拌，都是绝佳选择。",
+                        ingredients: "牛腱子、八角、桂皮、花椒、小茴香、酱油、冰糖等",
+                        features: ["传统工艺", "高蛋白", "低脂肪", "五香口味"]
                     },
                     {
-                        name: "东坡肉",
-                        price: 68,
-                        desc: "慢火熬煮，肥而不腻，入口即化",
-                        img: "https://picsum.photos/id/312/600/400"
-                    },
-                    {
-                        name: "宫保鸡丁",
-                        price: 42,
-                        desc: "酸甜微辣，鸡肉嫩滑，花生酥脆",
-                        img: "https://picsum.photos/id/1080/600/400"
-                    }
-                ]
-            },
-            {
-                category: "凉菜",
-                dishes: [
-                    {
-                        name: "夫妻肺片",
-                        price: 48,
-                        desc: "经典川菜，麻辣鲜香，口感丰富",
-                        img: "https://picsum.photos/id/225/600/400"
-                    },
-                    {
-                        name: "拍黄瓜",
-                        price: 16,
-                        desc: "清爽解腻，开胃必备，酸辣适中",
-                        img: "https://picsum.photos/id/139/600/400"
-                    },
-                    {
-                        name: "凉拌海带丝",
-                        price: 12,
-                        desc: "脆嫩爽口，低脂健康，酸甜开胃",
-                        img: "https://picsum.photos/id/146/600/400"
-                    }
-                ]
-            },
-            {
-                category: "主食",
-                dishes: [
-                    {
-                        name: "蛋炒饭",
-                        price: 22,
-                        desc: "颗粒分明，蛋香浓郁，咸淡适中",
-                        img: "https://picsum.photos/id/291/600/400"
-                    },
-                    {
-                        name: "牛肉拉面",
+                        name: "卤鸡爪",
                         price: 32,
-                        desc: "手工拉面，劲道十足，牛肉软烂",
-                        img: "https://picsum.photos/id/431/600/400"
-                    },
-                    {
-                        name: "灌汤包",
-                        price: 28,
-                        desc: "皮薄馅大，汤汁鲜美，一口爆汁",
-                        img: "https://picsum.photos/id/314/600/400"
+                        desc: "个大肉厚，先炸后卤，酥烂入味，越啃越香",
+                        img: "https://picsum.photos/id/312/600/400",
+                        detailDesc: "选用个大肉厚的优质鸡爪，先经油炸至金黄，再放入秘制卤汤中卤制。成品鸡爪酥烂入味，皮糯肉香，骨头都能嚼出味道，是追剧、下酒的绝佳搭配。",
+                        ingredients: "鸡爪、八角、桂皮、香叶、辣椒、酱油、料酒等",
+                        features: ["追剧必备", "下酒神器", "微辣", "肉质Q弹"]
                     }
                 ]
             },
             {
-                category: "饮品",
+                category: "特色卤味",
                 dishes: [
                     {
-                        name: "冰镇酸梅汤",
-                        price: 12,
-                        desc: "手工熬制，无添加，消暑解渴",
-                        img: "https://picsum.photos/id/227/600/400"
+                        name: "卤鸭头",
+                        price: 45,
+                        desc: "秘制卤料，先卤后浸，麻辣鲜香，回味无穷",
+                        img: "https://picsum.photos/id/225/600/400",
+                        detailDesc: "精选新鲜鸭头，经过多道处理工序去除腥味，先用秘制卤汤卤制，后浸泡入味。鸭头肉质鲜嫩，卤香与麻辣完美融合，让人回味无穷，是喜爱重口味食客的首选。",
+                        ingredients: "鸭头、干辣椒、花椒、八角、桂皮、香叶、料酒等",
+                        features: ["麻辣鲜香", "重口味", "下酒佳品", "秘制配方"]
                     },
                     {
-                        name: "鲜榨西瓜汁",
+                        name: "卤鸭翅",
+                        price: 38,
+                        desc: "肉质紧实，卤香浓郁，啃食过瘾",
+                        img: "https://picsum.photos/id/139/600/400",
+                        detailDesc: "选用优质鸭翅，经过精心处理后，放入老卤汤中卤制而成。鸭翅肉质紧实有嚼劲，卤香渗透每一寸肌肤，啃起来特别过瘾，是休闲零食的绝佳选择。",
+                        ingredients: "鸭翅、八角、桂皮、香叶、酱油、冰糖、料酒等",
+                        features: ["休闲零食", "肉质紧实", "五香口味", "可真空包装"]
+                    },
+                    {
+                        name: "卤藕片",
                         price: 18,
-                        desc: "纯鲜榨无添加，清甜爽口",
-                        img: "https://picsum.photos/id/239/600/400"
+                        desc: "清脆爽口，卤香十足，解腻佳品",
+                        img: "https://picsum.photos/id/146/600/400",
+                        detailDesc: "选用新鲜脆藕，切片后经焯水，再放入卤汤中卤制。成品藕片清脆爽口，卤香十足，既可以作为开胃小菜，也可以搭配其他卤味解腻，健康又美味。",
+                        ingredients: "莲藕、八角、桂皮、香叶、酱油、冰糖、盐等",
+                        features: ["素食可选", "解腻佳品", "清脆爽口", "低热量"]
+                    }
+                ]
+            },
+            {
+                category: "卤味拼盘",
+                dishes: [
+                    {
+                        name: "全家福拼盘",
+                        price: 128,
+                        desc: "招牌猪蹄、卤牛肉、鸡爪、鸭翅各选，一次尝遍",
+                        img: "https://picsum.photos/id/291/600/400",
+                        detailDesc: "我们的全家福拼盘汇集了店内多种招牌卤味，包括招牌猪蹄、卤牛肉、鸡爪和鸭翅，让您一次品尝到多种美味。拼盘分量十足，适合2-3人分享，是家庭聚餐和朋友小聚的理想选择。",
+                        ingredients: "猪蹄、牛肉、鸡爪、鸭翅、多种卤料",
+                        features: ["多人分享", "品种丰富", "性价比高", "可自选搭配"]
                     },
                     {
-                        name: "芒果奶昔",
-                        price: 22,
-                        desc: "新鲜芒果+纯牛奶，果香浓郁",
-                        img: "https://picsum.photos/id/240/600/400"
+                        name: "肉食者拼盘",
+                        price: 108,
+                        desc: "精选多种肉类卤味组合，肉食爱好者首选",
+                        img: "https://picsum.photos/id/431/600/400",
+                        detailDesc: "为肉食爱好者精心打造的拼盘，包含卤牛肉、卤猪蹄、卤猪耳和卤鸭腿等多种肉类卤味。每一种都选用优质食材，经传统工艺卤制而成，肉质鲜嫩，卤香浓郁。",
+                        ingredients: "牛肉、猪蹄、猪耳、鸭腿、多种卤料",
+                        features: ["纯肉组合", "肉食最爱", "分量充足", "可真空包装"]
+                    },
+                    {
+                        name: "素食卤味拼盘",
+                        price: 48,
+                        desc: "多种卤制素菜组合，健康美味",
+                        img: "https://picsum.photos/id/314/600/400",
+                        detailDesc: "精选多种新鲜蔬菜，经秘制卤汤卤制而成的素食拼盘。包含卤藕片、卤豆腐、卤海带、卤香菇等，口感丰富，卤香浓郁，健康美味，适合素食者或作为解腻配菜。",
+                        ingredients: "莲藕、豆腐、海带、香菇、多种卤料",
+                        features: ["素食可选", "健康低卡", "解腻佳品", "营养丰富"]
+                    }
+                ]
+            },
+            {
+                category: "卤味伴侣",
+                dishes: [
+                    {
+                        name: "秘制卤料包",
+                        price: 25,
+                        desc: "门店同款卤料，在家也能做出美味卤味",
+                        img: "https://picsum.photos/id/227/600/400",
+                        detailDesc: "采用门店同款秘制配方，包含24味天然香料，经过科学配比混合而成。使用我们的卤料包，您在家也能轻松做出和门店一样美味的卤味。每包可卤制2-3斤食材，适合家庭使用。",
+                        ingredients: "八角、桂皮、香叶、丁香、草果、花椒等24味天然香料",
+                        features: ["家庭必备", "秘制配方", "使用方便", "可重复使用"]
+                    },
+                    {
+                        name: "特制辣椒油",
+                        price: 15,
+                        desc: "香醇不腻，辣而不燥，为卤味增色添香",
+                        img: "https://picsum.photos/id/239/600/400",
+                        detailDesc: "我们的特制辣椒油选用优质辣椒和多种香料，经过多道工序熬制而成。色泽红亮，香醇不腻，辣而不燥，可为各种卤味增色添香，是搭配卤味的绝佳伴侣。",
+                        ingredients: "干辣椒、芝麻、花椒、食用油、多种香料",
+                        features: ["秘制配方", "辣而不燥", "香气浓郁", "百搭调味"]
+                    },
+                    {
+                        name: "卤味专用手套",
+                        price: 5,
+                        desc: "食品级材质，加厚耐用，吃卤味更方便卫生",
+                        img: "https://picsum.photos/id/240/600/400",
+                        detailDesc: "专为食用卤味设计的食品级手套，采用加厚材质，耐用不易破，让您在享用卤味时更加方便卫生，不用担心弄脏手。每包包含10只手套，经济实用。",
+                        ingredients: "食品级PE材质",
+                        features: ["食品级", "加厚耐用", "卫生方便", "经济实用"]
                     }
                 ]
             }
         ];
 
-        // --------------------------
-        // 以下代码无需修改，自动渲染菜单
-        // --------------------------
+        // 获取DOM元素
         const categoryNav = document.getElementById("categoryNav");
         const dishGrid = document.getElementById("dishGrid");
+        const dishDetailModal = document.getElementById("dishDetailModal");
+        const detailClose = document.getElementById("detailClose");
+        const detailImg = document.getElementById("detailImg");
+        const detailName = document.getElementById("detailName");
+        const detailPrice = document.getElementById("detailPrice");
+        const detailDescription = document.getElementById("detailDescription");
+        const detailIngredients = document.getElementById("detailIngredients");
+        const detailFeatures = document.getElementById("detailFeatures");
 
         // 1. 渲染分类标签
         function renderCategory() {
@@ -280,7 +489,7 @@
             currentCategory.dishes.forEach(dish => {
                 const card = document.createElement("div");
                 card.className = "dish-card";
-                // 拼接菜品HTML（确保语法无错误）
+                // 拼接菜品HTML
                 card.innerHTML = `
                     <img src="${dish.img}" alt="${dish.name}" class="dish-img">
                     <div class="dish-info">
@@ -289,9 +498,58 @@
                         <div class="dish-price">¥${dish.price}</div>
                     </div>
                 `;
+                // 点击菜品卡片打开详情页
+                card.addEventListener("click", () => openDishDetail(dish));
                 dishGrid.appendChild(card);
             });
         }
+
+        // 3. 打开菜品详情页
+        function openDishDetail(dish) {
+            // 填充详情数据
+            detailImg.src = dish.img;
+            detailImg.alt = dish.name;
+            detailName.textContent = dish.name;
+            detailPrice.textContent = `¥${dish.price}`;
+            detailDescription.textContent = dish.detailDesc;
+            detailIngredients.textContent = dish.ingredients;
+            
+            // 渲染特色标签
+            detailFeatures.innerHTML = "";
+            dish.features.forEach(feature => {
+                const tag = document.createElement("span");
+                tag.className = "feature-tag";
+                tag.textContent = feature;
+                detailFeatures.appendChild(tag);
+            });
+            
+            // 显示详情弹窗
+            dishDetailModal.style.display = "flex";
+            // 阻止页面滚动
+            document.body.style.overflow = "hidden";
+        }
+
+        // 4. 关闭菜品详情页
+        function closeDishDetail() {
+            dishDetailModal.style.display = "none";
+            // 恢复页面滚动
+            document.body.style.overflow = "auto";
+        }
+
+        // 绑定关闭事件
+        detailClose.addEventListener("click", closeDishDetail);
+        // 点击弹窗外部关闭
+        dishDetailModal.addEventListener("click", (e) => {
+            if (e.target === dishDetailModal) {
+                closeDishDetail();
+            }
+        });
+        // 按ESC键关闭
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && dishDetailModal.style.display === "flex") {
+                closeDishDetail();
+            }
+        });
 
         // 初始化：页面加载完成后渲染
         window.onload = function() {
